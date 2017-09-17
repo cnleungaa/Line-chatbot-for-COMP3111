@@ -87,9 +87,6 @@ import java.net.URI;
 @Slf4j
 @LineMessageHandler
 public class KitchenSinkController {
-	
-
-
 	@Autowired
 	private LineMessagingClient lineMessagingClient;
 
@@ -110,8 +107,9 @@ public class KitchenSinkController {
 	@EventMapping
 	public void handleLocationMessageEvent(MessageEvent<LocationMessageContent> event) {
 		LocationMessageContent locationMessage = event.getMessage();
-		reply(event.getReplyToken(), new LocationMessage(locationMessage.getTitle(), locationMessage.getAddress(),
-				locationMessage.getLatitude(), locationMessage.getLongitude()));
+		reply(event.getReplyToken(), 
+              new LocationMessage(locationMessage.getTitle(), locationMessage.getAddress(),
+			  locationMessage.getLatitude(), locationMessage.getLongitude()));
 	}
 
 	@EventMapping
@@ -121,7 +119,8 @@ public class KitchenSinkController {
 		String messageId = event.getMessage().getId();
 		try {
 			response = lineMessagingClient.getMessageContent(messageId).get();
-		} catch (InterruptedException | ExecutionException e) {
+		} 
+        catch (InterruptedException | ExecutionException e) {
 			reply(replyToken, new TextMessage("Cannot get image: " + e.getMessage()));
 			throw new RuntimeException(e);
 		}
@@ -137,7 +136,8 @@ public class KitchenSinkController {
 		String messageId = event.getMessage().getId();
 		try {
 			response = lineMessagingClient.getMessageContent(messageId).get();
-		} catch (InterruptedException | ExecutionException e) {
+		} 
+        catch (InterruptedException | ExecutionException e) {
 			reply(replyToken, new TextMessage("Cannot get image: " + e.getMessage()));
 			throw new RuntimeException(e);
 		}
@@ -187,7 +187,8 @@ public class KitchenSinkController {
 		try {
 			BotApiResponse apiResponse = lineMessagingClient.replyMessage(new ReplyMessage(replyToken, messages)).get();
 			log.info("Sent messages: {}", apiResponse);
-		} catch (InterruptedException | ExecutionException e) {
+		} 
+        catch (InterruptedException | ExecutionException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -219,7 +220,8 @@ public class KitchenSinkController {
                     lineMessagingClient
                             .getProfile(userId)
                             .whenComplete(new ProfileGetter (this, replyToken));
-                } else {
+                } 
+                else {
                     this.replyText(replyToken, "Bot can't use profile API without user ID");
                 }
                 break;
@@ -238,9 +240,9 @@ public class KitchenSinkController {
                 String imageUrl = createUri("/static/buttons/1040.jpg");
                 CarouselTemplate carouselTemplate = new CarouselTemplate(
                         Arrays.asList(
-                                new CarouselColumn(imageUrl, "hoge", "fuga", Arrays.asList(
-                                        new URIAction("Go to line.me",
-                                                      "https://line.me"),
+                                new CarouselColumn(imageUrl, "hoge", "fuga", 
+                                                   Arrays.asList(
+                                        new URIAction("Go to line.me", "https://line.me"),
                                         new PostbackAction("Say hello1",
                                                            "hello ã�“ã‚“ã�«ã�¡ã�¯")
                                 )),
@@ -261,13 +263,14 @@ public class KitchenSinkController {
             	String reply = null;
             	try {
             		reply = database.search(text);
-            	} catch (Exception e) {
+            	} 
+                catch (Exception e) {
             		reply = text;
             	}
                 log.info("Returns echo message {}: {}", replyToken, reply);
                 this.replyText(
-                        replyToken,
-                        itscLOGIN + " says " + reply
+                    replyToken,
+                    itscLOGIN + " says " + reply
                 );
                 break;
         }
@@ -310,8 +313,6 @@ public class KitchenSinkController {
 		tempFile.toFile().deleteOnExit();
 		return new DownloadedContent(tempFile, createUri("/downloaded/" + tempFile.getFileName()));
 	}
-
-
 	
 
 
@@ -349,16 +350,9 @@ public class KitchenSinkController {
             	ksc.replyText(replyToken, throwable.getMessage());
             	return;
         	}
-        	ksc.reply(
-                	replyToken,
-                	Arrays.asList(new TextMessage(
-                		"Display name: " + profile.getDisplayName()),
-                              	new TextMessage("Status message: "
-                            		  + profile.getStatusMessage()))
-        	);
+        	ksc.reply(replyToken,
+                	  Arrays.asList(new TextMessage("Display name: " + profile.getDisplayName()),
+                               	    new TextMessage("Status message: " + profile.getStatusMessage())));
     	}
     }
-	
-	
-
 }
