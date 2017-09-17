@@ -55,20 +55,23 @@ public class KitchenSinkTester {
 	public void testNotFound() throws Exception {
 		boolean thrown = false;
 		try {
-			this.databaseEngine.search("no");
-		} catch (Exception e) {
+			this.databaseEngine.search("no");  // not found
+		} 
+        catch (Exception e) {
 			thrown = true;
 		}
-		assertThat(thrown);
+		assertThat(thrown);  // indeed thrown=true -> true assertion
 	}
 	
+    // exception thrown
 	@Test
 	public void testFound() throws Exception {
 		boolean thrown = false;
 		String result = null;
 		try {
 			result = this.databaseEngine.search("abc");
-		} catch (Exception e) {
+		} 
+        catch (Exception e) {
 			thrown = true;
 		}
 		assertThat(!thrown);
