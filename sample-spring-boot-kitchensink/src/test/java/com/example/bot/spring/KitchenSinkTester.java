@@ -51,6 +51,7 @@ public class KitchenSinkTester {
 	@Autowired
 	private DatabaseEngine databaseEngine;
 	
+    // test if key is not found in database
 	@Test
 	public void testNotFound() throws Exception {
 		boolean thrown = false;
@@ -60,10 +61,10 @@ public class KitchenSinkTester {
         catch (Exception e) {
 			thrown = true;
 		}
-		assertThat(thrown);  // indeed thrown=true -> true assertion
+		assertThat(thrown).isEqualTo(true);  // indeed thrown=true -> true assertion
 	}
 	
-    // exception thrown
+    // test if key is found in database (by exact match)
 	@Test
 	public void testFound() throws Exception {
 		boolean thrown = false;
@@ -74,7 +75,70 @@ public class KitchenSinkTester {
         catch (Exception e) {
 			thrown = true;
 		}
-		assertThat(!thrown);
-		assertThat(result.equals("def"));
+		assertThat(!thrown).isEqualTo(true);
+		assertThat(result.equals("def")).isEqualTo(true);
 	}
+
+    // partial match case 1: at the front
+    @Test
+    public void partialMatch1() throws Exception {
+        boolean thrown = false;
+        String answer = null;
+        try {
+            answer = this.databaseEngine.search("Hi, I am Sam");
+        }
+        catch (Exception e){
+            thrown = true;
+        }
+        assertThat(!thrown).isEqualTo(true);
+        assertThat(answer.equals("Hey, how things going?")).isEqualTo(true);
+    }
+
+    // partial match case 2: at the end + different case
+    @Test
+    public void partialMatch2() throws Exception {
+        boolean thrown = false;
+        String answer = null;
+        try {
+            answer = this.databaseEngine.search("I wonder who is Prof Kim");
+        }
+        catch (Exception e){
+            thrown = true;
+        }
+        assertThat(!thrown).isEqualTo(true);
+        assertThat(answer.equals("Well, this is your instructor.")).isEqualTo(true);
+    }
+
+    // partial match case 3: at the middle + different case + merged with other char ','
+    @Test
+    public void partialMatch3() throws Exception {
+        boolean thrown = false;
+        String answer = null;
+        try {
+            answer = this.databaseEngine.search("My name is aBc, how are you?");
+        }
+        catch (Exception e){
+            thrown = true;
+        }
+
+        assertThat(!thrown).isEqualTo(true);
+        assertThat(answer.equals("def")).isEqualTo(true);
+    }
+
+    // partial match case 4: multiple matches
+    //                       ==> return first matched result found in database (can be amended)
+    @Test
+    public void partialMatch4() throws Exception {
+        boolean thrown = false;
+        String answer = null;
+        try {
+            answer = this.databaseEngine.search("Hi guys, how are you? I am fine");
+        }
+        catch (Exception e){
+            thrown = true;
+        }
+
+        assertThat(!thrown).isEqualTo(true);
+        assertThat(answer.equals("Hey, how things going?")).isEqualTo(true);  // matched with 'Hi' key
+    }
 }
