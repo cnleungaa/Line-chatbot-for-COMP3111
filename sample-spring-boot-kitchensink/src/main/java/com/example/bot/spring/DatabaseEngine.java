@@ -26,23 +26,27 @@ import lombok.extern.slf4j.Slf4j;
 public class DatabaseEngine {
 	private final String FILENAME = "/static/database.txt";
 
+    // exact + partial match
 	String search(String text) throws Exception {
-		String result = null;
+		String result = null;  // final resulting output by computer
 		BufferedReader br = null;
 		InputStreamReader isr = null;
 		try {
 			isr = new InputStreamReader(this.getClass().getResourceAsStream(FILENAME));
 			br = new BufferedReader(isr);
 			String sCurrentLine;
-			
+
+            // *** always return the first matching result ***
 			while (result == null && (sCurrentLine = br.readLine()) != null) {
-				String[] parts = sCurrentLine.split(":");
-                // search by key (in lowercase)
-				if (text.toLowerCase().equals(parts[0].toLowerCase())){
-					result = parts[1];  // found
-				}
+                // only interested in key
+				String data[] = sCurrentLine.split(":");  // [0]: key, [1]: value
+                // search by key
+				if (text.toLowerCase().equals(data[0].toLowerCase()))  // exact match
+					result = data[1];
+                else if (text.toLowerCase().contains(data[0].toLowerCase()))  // key embedded in text and
+                    result = data[1];                                         // having exact sequence as key
 			}
-		} 
+		}
         catch (IOException e) {
 			log.info("IOException while reading file: {}", e.toString());
 		} 
@@ -57,6 +61,7 @@ public class DatabaseEngine {
 				log.info("IOException while closing file: {}", ex.toString());
 			}
 		}
+
 		if (result != null)
 			return result;
 		throw new Exception("NOT FOUND");
