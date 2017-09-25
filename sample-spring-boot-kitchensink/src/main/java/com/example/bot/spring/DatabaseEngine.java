@@ -24,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class DatabaseEngine {
+    // load database from local file
 	private final String FILENAME = "/static/database.txt";
 
     // exact + partial match
@@ -62,8 +63,7 @@ public class DatabaseEngine {
 			}
 		}
 
-		if (result != null)
-			return result;
+		if (result != null) return result;
 		throw new Exception("NOT FOUND");
     }
 }
