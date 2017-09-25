@@ -43,12 +43,14 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import com.example.bot.spring.DatabaseEngine;
+import com.example.bot.spring.SQLDatabaseEngine;
 
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { KitchenSinkTester.class, DatabaseEngine.class })
+// @SpringBootTest(classes = { KitchenSinkTester.class, DatabaseEngine.class })
+@SpringBootTest(classes = { KitchenSinkTester.class, SQLDatabaseEngine.class })  // test SQL Database
 public class KitchenSinkTester {
-	@Autowired
+	@Autowired  // autowired to DatabaseEngine / SDLDatabaseEngine
 	private DatabaseEngine databaseEngine;
 	
     // test if key is not found in database
@@ -74,6 +76,7 @@ public class KitchenSinkTester {
 		} 
         catch (Exception e) {
 			thrown = true;
+            // System.err.println("Error thrown: " + e);
 		}
 		assertThat(!thrown).isEqualTo(true);
 		assertThat(result.equals("def")).isEqualTo(true);
