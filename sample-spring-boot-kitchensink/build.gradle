@@ -22,5 +22,6 @@ dependencies {
 }
 
 test {
-    environment "DATABASE_URL", "PUT YOUR URI HERE" 
+    // read responses from SQL database deployed by Heroku
+    environment "DATABASE_URL", "postgres://yltgbgaqnzxkai:f8a08faac78dfbf10cb248ce2cee3d16029f46bcbdf610997b40bbb2ed0c5b9e@ec2-107-21-109-15.compute-1.amazonaws.com:5432/dd1kvq5b69v80a" 
 }
